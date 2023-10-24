@@ -40,6 +40,9 @@ public class Main {
 
         tree2.copyRecursive(tree);
 
+        boolean res = tree.isIdenticalTreeMorris(tree, tree2);
+        System.out.println("Morris " + res);
+
         tree.isIdentical(tree2);
 
         tree2.insert(35);
@@ -310,4 +313,67 @@ class BinaryTree {
         }
 
     }
+
+    public boolean isIdenticalTreeMorris(BinaryTree p, BinaryTree q) {
+        // Base cases
+        Node r1 = p.root;
+        Node r2 = q.root;
+        if (r1 == null && r2 == null) // both trees are empty
+            return true;
+        if (r1 == null || r2 == null) // one of the trees is empty, which
+            // means they are not identical
+            return false;
+
+        // Morris traversal
+        while (r1 != null && r2 != null) {
+            if (r1.key != r2.key) // if the val of the current nodes
+                // is not the same, then the trees
+                // are not identical
+                return false;
+
+            // Morris traversal for r1
+            if (r1.left == null) { // if the left child is NULL, move to
+                // the right child
+                r1 = r1.right;
+            } else { // if the left child is not NULL, find the
+                // predecessor
+                Node pre = r1.left;
+                while (pre.right != null && pre.right != r1) // find the rightmost node
+                    // in the left subtree
+                    pre = pre.right;
+                if (pre.right == null) { // if the right pointer of the
+                    // predecessor is NULL, make it
+                    // point to the current node
+                    pre.right = r1;
+                    r1 = r1.left;
+                } else { // if the right pointer of the
+                    // predecessor is already pointing to the
+                    // current node, set it back to NULL and
+                    // move to the right child
+                    pre.right = null;
+                    r1 = r1.right;
+                }
+            }
+
+            // Morris traversal for r2, same as for r1
+            if (r2.left == null) {
+                r2 = r2.right;
+            } else {
+                Node pre = r2.left;
+                while (pre.right != null && pre.right != r2)
+                    pre = pre.right;
+                if (pre.right == null) {
+                    pre.right = r2;
+                    r2 = r2.left;
+                } else {
+                    pre.right = null;
+                    r2 = r2.right;
+                }
+            }
+        }
+
+        return (r1 == null && r2 == null); // if both r1 and r2 are NULL,
+        // then the trees are identical
+    }
+
 }
