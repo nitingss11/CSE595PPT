@@ -18,16 +18,22 @@ public class Main {
            30      70
           /  \    /  \
         20   40  60   80 */
-        tree.insert(50);
-        tree.insert(30);
+//        tree.insert(50);
+//        tree.insert(30);
+//        tree.insert(20);
+//        tree.insert(40);
+//        tree.insert(70);
+//        tree.insert(45);
+//        tree.insert(25);
         tree.insert(20);
-        tree.insert(40);
-        tree.insert(70);
-        tree.insert(60);
-        tree.insert(80);
+        tree.insert(30);
+        tree.insert(10);
         System.out.println("----------------------------------------------------");
 
+
         BinaryTree tree2 = new BinaryTree("B");
+        tree2.copyMorris(tree);
+
         tree2.insert(50);
         tree2.insert(30);
         tree2.insert(20);
@@ -39,6 +45,9 @@ public class Main {
         tree.isIdentical(tree2);
 
         tree2.copyRecursive(tree);
+
+        tree.copyMorris(tree2);
+//        System.out.println("Morris " + res);
 
         boolean res = tree.isIdenticalTreeMorris(tree, tree2);
         System.out.println("Morris " + res);
@@ -375,5 +384,90 @@ class BinaryTree {
         return (r1 == null && r2 == null); // if both r1 and r2 are NULL,
         // then the trees are identical
     }
+
+    public void copyMorris(BinaryTree p) {
+        // Base cases
+        Node r1 = p.root;
+//        Node r2 = q.root;
+//        if (r1 == null && r2 == null) // both trees are empty
+//            return true;
+//        if (r1 == null || r2 == null) // one of the trees is empty, which
+//            // means they are not identical
+//            return false;
+        root = new Node(r1.key);
+        Node r2 = root;
+
+        // Morris traversal
+        while (r1 != null) {
+//            if (r1.key != r2.key) // if the val of the current nodes
+//                // is not the same, then the trees
+//                // are not identical
+//                return false;
+
+            // Morris traversal for r1
+            if (r1.left == null) { // if the left child is NULL, move to
+                // the right child
+//                if(r2 == null) {
+//                    r2 = new Node(r1.key);
+//                }
+//                r1 = r1.right;
+                if(r1 != null) {
+                    r2.right = new Node(r1.key);
+                    r1 = r1.right;
+                    r2 = r2.right;
+                }
+            } else { // if the left child is not NULL, find the
+                // predecessor
+                Node pre = r1.left;
+                if(r2 == null) {
+                    r2 = new Node(r1.key);
+                }
+                r2.left = new Node(pre.key);
+                Node pre2 = r2.left;
+                while (pre.right != null && pre.right != r1) {
+                    // in the left subtree
+                    pre = pre.right;
+                    pre2.right = new Node(pre.key);
+                    pre2 = pre2.right;
+                }
+                if (pre.right == null) { // if the right pointer of the
+                    // predecessor is NULL, make it
+                    // point to the current node
+                    pre.right = r1;
+                    pre2.right = r2;
+                    r1 = r1.left;
+                    r2 = r2.left;
+                } else { // if the right pointer of the
+                    // predecessor is already pointing to the
+                    // current node, set it back to NULL and
+                    // move to the right child
+                    pre.right = null;
+                    pre2.right = null;
+                    r1 = r1.right;
+                    r2 = r2.right;
+                }
+            }
+
+//            // Morris traversal for r2, same as for r1
+//            if (r2.left == null) {
+//                r2 = r2.right;
+//            } else {
+//                Node pre = r2.left;
+//                while (pre.right != null && pre.right != r2)
+//                    pre = pre.right;
+//                if (pre.right == null) {
+//                    pre.right = r2;
+//                    r2 = r2.left;
+//                } else {
+//                    pre.right = null;
+//                    r2 = r2.right;
+//                }
+//            }
+        }
+
+//        return r2; // if both r1 and r2 are NULL,
+        // then the trees are identical
+    }
+
 
 }
